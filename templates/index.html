@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог товаров (Windows)</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #59bdf7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            height: 80px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-btn {
+            background-color: #333;
+            color: white;
+            padding: 10px 14px;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 45px;
+            justify-items: stretch;
+            margin-top: 20px;
+        }
+
+        .product {
+            width: 420px;
+            margin: auto;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 370px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f8f8;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .product-id,
+        .product-name,
+        .product-price {
+            padding: 8px;
+            text-align: center;
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-name b {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .product-price span {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2196f3;
+        }
+
+        h1 {
+            color: black;
+            text-align: center;
+        }
+
+        .navbar .dropdown:first-child {
+            margin-left: 70px;
+            font-size: 1.2em;
+        }
+
+        .navbar .dropdown:last-child {
+            margin-right: 70px;
+            font-size: 1.2em;
+        }
+
+        form button {
+            background-color: #1976d2;
+            color: white;
+            padding: 18px 24px;
+            font-size: 17px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        form button:hover {
+            background-color: #1565c0;
+        }
+
+        .description-btn {
+            background-color: #888;
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .product-description {
+            display: none;
+            margin-top: 10px;
+            padding: 0 15px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+
+        .catalog-title {
+           font-size: 38px;
+           color: white;
+           text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+           font-weight: bold;
+           letter-spacing: 1.5px;
+           margin: 30px 0 10px;
+           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="dropdown">
+            <button class="dropdown-btn">Меню</button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('catalog', product_type='windows') }}">Windows</a>
+                <a href="{{ url_for('catalog', product_type='office') }}">Office</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-btn">{{ session['username'] }}</button>
+            <div class="dropdown-content">
+                <a href="{{ url_for('user_profile') }}">Профиль</a>
+                <a href="{{ url_for('basket') }}">Корзина</a>
+                <a href="{{ url_for('order_history') }}">История заказов</a>
+                <a href="{{ url_for('logout') }}">Выйти из аккаунта</a>
+            </div>
+        </div>
+    </div>
+    <h1 class="catalog-title">Каталог Windows</h1>
+    <div class="container">
+        {% for product in products %}
+        <div class="product">
+            <div class="product-image">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+            </div>
+            <div class="product-id">
+                <span>ID: {{ product.id }}</span>
+            </div>
+            <div class="product-name">
+                <b>{{ product.name }}</b>
+            </div>
+            <div class="product-price">
+                <span>Цена: {{ product.price }} рублей</span>
+            </div>
+            <div style="padding: 10px; text-align: center;">
+                <form action="{{ url_for('add_to_cart', item_id=product.id) }}" method="post">
+                    <button type="submit">Добавить в корзину</button>
+                </form>
+                <button class="description-btn" onclick="toggleDescription(this)">Показать описание</button>
+                <p class="product-description">{{ product.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleDescription(button) {
+            const desc = button.nextElementSibling;
+            const isVisible = desc.style.display === 'block';
+            desc.style.display = isVisible ? 'none' : 'block';
+            button.textContent = isVisible ? 'Показать описание' : 'Скрыть описание';
+        }
+    </script>
+</body>
+</html>
+

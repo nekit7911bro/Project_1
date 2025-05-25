@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #35454f;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            height: 80px;
+
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-btn {
+            background-color: #333;
+            color: white;
+            padding: 10px 14px;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cart-container {
+            background-color: white;
+            color: black;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            margin: 40px auto;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            font-size: 17px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button.action {
+            background-color: #d9534f;
+            border: none;
+            color: white;
+            padding: 9px 14px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        button.action:hover {
+            background-color: #c9302c;
+        }
+
+        .bottom-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .bottom-buttons button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .bottom-buttons button:hover {
+            background-color: #45a049;
+        }
+
+        .total-row td {
+            font-weight: bold;
+            background-color: #f9f9f9;
+            font-size: 18px;
+        }
+         .navbar .dropdown:first-child {
+            margin-left: 70px;
+            font-size: 1.2em;
+        }
+        .navbar .dropdown:last-child {
+            margin-right: 70px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="dropdown">
+        <button class="dropdown-btn">Меню</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('catalog', product_type='windows') }}">Windows</a>
+            <a href="{{ url_for('catalog', product_type='office') }}">Office</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropdown-btn">{{ session['username'] }}</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('user_profile') }}">Профиль</a>
+            <a href="{{ url_for('basket') }}">Корзина</a>
+            <a href="{{ url_for('order_history') }}">История заказов</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </div>
+    </div>
+</div>
+
+<div class="cart-container">
+    <h2>Корзина</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p style="color: {% if category == 'success' %}green{% else %}red{% endif %}; font-weight: bold;">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if cart_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID товара</th>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }} руб.</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('remove_from_cart', item_id=item.id) }}">
+                                <button class="action">-</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="5">Сумма к оплате: {{ total_price }} руб.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="bottom-buttons">
+            <button onclick="window.location.href='{{ url_for('welcome') }}'">Вернуться на главную</button>
+            <form method="post" action="{{ url_for('checkout') }}">
+                <button type="submit">Оформить заказ</button>
+            </form>
+        </div>
+    {% else %}
+        <p style="font-weight: bold;">Ваша корзина пуста!</p>
+        <div class="bottom-buttons">
+            <button onclick="window.location.href='{{ url_for('welcome') }}'">Вернуться на главную</button>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
+
+
+

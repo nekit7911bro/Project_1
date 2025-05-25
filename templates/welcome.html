@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор продукта</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2c2f33;
+            color: white;
+            font-family: sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .button {
+            display: block;
+            width: 180px;
+            padding: 15px 30px;
+            margin: 10px auto;
+            font-size: 1.5em;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-size: 32px;">Добро пожаловать!</h1>
+        <p style="font-size: 25px;">Выберите нужный Вам каталог:</p>
+        <a href="{{ url_for('catalog', product_type='windows') }}" class="button">Windows</a>
+        <a href="{{ url_for('catalog', product_type='office') }}" class="button">Office</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизация</title>
+    <style>
+
+        body {
+            background-color:#2c2f33;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+
+        form {
+            background-color: #333;
+            padding: 70px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            color: white;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px; /* Отступ снизу от заголовка */
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 90%;
+            padding: 16px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid #555;
+            background-color: #222;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 90%;
+            margin-top: 16px;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            color: #66ccff;
+            text-decoration: none;
+            display: block;
+            margin-top: 30px;
+            font-size: 18px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            text-align: center;
+             font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <form action="{{ url_for('login') }}" method="post">
+        <h1>Авторизация</h1>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <input type="text" name="username" placeholder="Логин" required><br>
+        <input type="password" name="password" placeholder="Пароль" required><br>
+        <input type="submit" value="Войти">
+        <a href="{{ url_for('register') }}">Зарегистрироваться</a>
+    </form>
+</body>
+</html>
+

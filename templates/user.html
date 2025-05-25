@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль пользователя</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #35454f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            height: 80px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-btn {
+            background-color: #333;
+            color: white;
+            padding: 10px 14px;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .container {
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+            font-weight: bold;
+             font-size: 17px;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: white;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 17px;
+        }
+
+        input::placeholder {
+            color: #888;
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 15px auto;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 0;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        h1 {
+            color: white;
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 7px;
+            font-size: 17px;
+        }
+
+        .navbar .dropdown:first-child {
+            margin-left: 70px;
+            font-size: 1.2em;
+        }
+
+        .navbar .dropdown:last-child {
+            margin-right: 70px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="dropdown">
+        <button class="dropdown-btn">Меню</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('catalog', product_type='windows') }}">Windows</a>
+            <a href="{{ url_for('catalog', product_type='office') }}">Office</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropdown-btn">{{ session['username'] }}</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('user_profile') }}">Профиль</a>
+            <a href="{{ url_for('basket') }}">Корзина</a>
+            <a href="{{ url_for('order_history') }}">История заказов</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Редактировать профиль</h1>
+    <form method="post" action="{{ url_for('user_profile') }}">
+        <div class="form-group">
+            <label for="first_name">Имя:</label>
+            {% if errors and errors.first_name %}
+                <span class="error-message">{{ errors.first_name }}</span>
+            {% endif %}
+            <input type="text" id="first_name" name="first_name" value="{{ first_name or '' }}" placeholder="Введите ваше имя">
+        </div>
+        <div class="form-group">
+            <label for="phone">Телефон:</label>
+            {% if errors and errors.phone %}
+                <span class="error-message">{{ errors.phone }}</span>
+            {% endif %}
+            <input type="text" id="phone" name="phone" value="{{ phone or '' }}" placeholder="Введите номер телефона">
+        </div>
+        <div class="form-group">
+            <label for="email">Почта:</label>
+            {% if errors and errors.email %}
+                <span class="error-message">{{ errors.email }}</span>
+            {% endif %}
+            <input type="email" id="email" name="email" value="{{ email or '' }}" placeholder="например, user@gmail.com">
+        </div>
+        <div class="form-group">
+            <label for="secondary_email">Запасная почта:</label>
+            {% if errors and errors.secondary_email %}
+                <span class="error-message">{{ errors.secondary_email }}</span>
+            {% endif %}
+            <input type="email" id="secondary_email" name="secondary_email" value="{{ secondary_email or '' }}" placeholder="например, backup@yandex.ru">
+        </div>
+        <div class="form-group">
+            <label for="card_number">Номер карты:</label>
+            {% if errors and errors.card_number %}
+                <span class="error-message">{{ errors.card_number }}</span>
+            {% endif %}
+            <input type="text" id="card_number" name="card_number" value="{{ card_number or '' }}" placeholder="16-значный номер карты">
+        </div>
+        <button type="button" onclick="window.location.href='{{ url_for('welcome') }}';">Выйти без сохранения</button>
+        <button type="submit">Сохранить</button>
+    </form>
+</div>
+</body>
+</html>

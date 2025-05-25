@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>История заказов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #35454f;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            height: 80px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-btn {
+            background-color: #333;
+            color: white;
+            padding: 10px 14px;
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cart-container {
+            background-color: white;
+            color: black;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            margin: 40px auto;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .bottom-buttons {
+            margin-top: 30px;
+        }
+
+        .bottom-buttons button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .bottom-buttons button:hover {
+            background-color: #45a049;
+        }
+
+        .navbar .dropdown:first-child {
+            margin-left: 70px;
+            font-size: 1.2em;
+        }
+        .navbar .dropdown:last-child {
+            margin-right: 70px;
+            font-size: 1.2em;
+        }
+
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <div class="dropdown">
+        <button class="dropdown-btn">Меню</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('catalog', product_type='windows') }}">Windows</a>
+            <a href="{{ url_for('catalog', product_type='office') }}">Office</a>
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropdown-btn">{{ session['username'] }}</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('user_profile') }}">Профиль</a>
+            <a href="{{ url_for('basket') }}">Корзина</a>
+            <a href="{{ url_for('order_history') }}">История заказов</a>
+            <a href="{{ url_for('logout') }}">Выйти из аккаунта</a>
+        </div>
+    </div>
+</div>
+
+<div class="cart-container">
+    <h2>История заказов</h2>
+
+    {% for order in orders %}
+        <h3>Заказ №{{ order.id }} — {{ order.created_at.strftime('%d.%m.%Y %H:%M') }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.items_list %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }} руб.</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price * item.quantity }} руб.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+    <div class="bottom-buttons">
+        <button onclick="window.location.href='{{ url_for('welcome') }}'">Вернуться на главную</button>
+    </div>
+</div>
+</body>
+</html>
+
